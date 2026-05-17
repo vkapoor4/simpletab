@@ -1,0 +1,690 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SimpleTab — Log money. Simply.</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Helvetica Neue", sans-serif;
+    background: #fff;
+    color: #1d1d1f;
+    overflow-x: hidden;
+  }
+
+  /* NAV */
+  nav {
+    position: fixed;
+    top: 0;
+    width: 100%;
+    background: rgba(255,255,255,0.85);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-bottom: 1px solid rgba(0,0,0,0.06);
+    z-index: 100;
+    padding: 0 40px;
+    height: 52px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .nav-logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 17px;
+    font-weight: 600;
+    color: #1d1d1f;
+    text-decoration: none;
+  }
+  .nav-icon {
+    width: 28px;
+    height: 28px;
+    background: #3B7BF6;
+    border-radius: 7px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 14px;
+    font-weight: 700;
+  }
+  .nav-cta {
+    background: #3B7BF6;
+    color: white;
+    padding: 8px 18px;
+    border-radius: 980px;
+    font-size: 14px;
+    font-weight: 500;
+    text-decoration: none;
+    transition: opacity 0.2s;
+  }
+  .nav-cta:hover { opacity: 0.85; }
+
+  /* HERO */
+  .hero {
+    padding: 140px 40px 100px;
+    text-align: center;
+    background: #fff;
+  }
+  .hero-icon {
+    width: 120px;
+    height: 120px;
+    background: #3B7BF6;
+    border-radius: 27px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 56px;
+    margin-bottom: 32px;
+    box-shadow: 0 20px 60px rgba(59,123,246,0.35);
+  }
+  .hero h1 {
+    font-size: 72px;
+    font-weight: 700;
+    letter-spacing: -2px;
+    line-height: 1.05;
+    color: #1d1d1f;
+    margin-bottom: 16px;
+  }
+  .hero h1 span { color: #3B7BF6; }
+  .hero p {
+    font-size: 22px;
+    color: #6e6e73;
+    font-weight: 400;
+    margin-bottom: 40px;
+    max-width: 500px;
+    margin-left: auto;
+    margin-right: auto;
+    line-height: 1.5;
+  }
+  .hero-buttons {
+    display: flex;
+    gap: 16px;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+  .btn-primary {
+    background: #000;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 12px;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    transition: transform 0.2s, opacity 0.2s;
+    height: 56px;
+  }
+  .btn-primary:hover { transform: scale(1.02); opacity: 0.9; }
+  .btn-primary svg { width: 28px; height: 28px; }
+  .btn-primary .badge-text { display: flex; flex-direction: column; line-height: 1.05; }
+  .btn-primary .badge-tagline { font-size: 11px; opacity: 0.92; letter-spacing: 0.02em; }
+  .btn-primary .badge-name { font-size: 20px; font-weight: 500; letter-spacing: -0.01em; }
+  .btn-secondary {
+    color: #3B7BF6;
+    font-size: 17px;
+    font-weight: 500;
+    text-decoration: none;
+    padding: 16px 24px;
+    transition: opacity 0.2s;
+  }
+  .btn-secondary:hover { opacity: 0.7; }
+
+  /* TAGLINE STRIP */
+  .tagline-strip {
+    background: #f5f5f7;
+    padding: 20px 40px;
+    text-align: center;
+    font-size: 15px;
+    color: #6e6e73;
+    letter-spacing: 0.01em;
+  }
+  .tagline-strip strong { color: #1d1d1f; }
+
+  /* SCREENSHOTS */
+  .screenshots {
+    padding: 100px 40px;
+    text-align: center;
+    background: #fff;
+  }
+  .section-label {
+    font-size: 13px;
+    font-weight: 600;
+    color: #3B7BF6;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+  .section-title {
+    font-size: 48px;
+    font-weight: 700;
+    letter-spacing: -1.5px;
+    line-height: 1.1;
+    margin-bottom: 16px;
+    color: #1d1d1f;
+  }
+  .section-subtitle {
+    font-size: 19px;
+    color: #6e6e73;
+    max-width: 500px;
+    margin: 0 auto 60px;
+    line-height: 1.5;
+  }
+  .phones {
+    display: flex;
+    gap: 24px;
+    justify-content: center;
+    align-items: flex-end;
+    flex-wrap: wrap;
+  }
+  .phone {
+    width: 220px;
+    background: #1d1d1f;
+    border-radius: 44px;
+    padding: 12px;
+    box-shadow: 0 40px 80px rgba(0,0,0,0.18);
+    transition: transform 0.3s;
+  }
+  .phone:hover { transform: translateY(-8px); }
+  .phone.center {
+    transform: scale(1.08);
+    box-shadow: 0 50px 100px rgba(59,123,246,0.25);
+  }
+  .phone.center:hover { transform: scale(1.08) translateY(-8px); }
+  .phone-screen {
+    background: #f2f2f7;
+    border-radius: 34px;
+    overflow: hidden;
+    aspect-ratio: 9/19.5;
+    display: flex;
+    flex-direction: column;
+  }
+  .phone-header {
+    background: #3B7BF6;
+    padding: 20px 16px 16px;
+    color: white;
+    text-align: center;
+  }
+  .phone-header .app-name { font-size: 11px; font-weight: 700; opacity: 0.9; }
+  .phone-header .month { font-size: 10px; opacity: 0.8; margin-top: 2px; }
+  .phone-header .amount { font-size: 28px; font-weight: 700; margin-top: 4px; }
+  .phone-header .sub { font-size: 9px; opacity: 0.8; }
+  .phone-body { padding: 10px; flex: 1; }
+  .expense-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px;
+    background: white;
+    border-radius: 10px;
+    margin-bottom: 6px;
+  }
+  .expense-icon {
+    width: 28px;
+    height: 28px;
+    background: #e8f0fe;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    flex-shrink: 0;
+  }
+  .expense-info { flex: 1; }
+  .expense-name { font-size: 9px; font-weight: 600; color: #1d1d1f; }
+  .expense-date { font-size: 8px; color: #8e8e93; }
+  .expense-amount { font-size: 10px; font-weight: 700; color: #1d1d1f; }
+
+  /* CHART PHONE */
+  .chart-area {
+    padding: 10px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .donut {
+    width: 100px;
+    height: 100px;
+    margin: 10px auto;
+  }
+  .chart-label { font-size: 8px; color: #6e6e73; text-align: center; margin-bottom: 8px; }
+  .breakdown-row {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    padding: 5px 8px;
+    background: white;
+    border-radius: 8px;
+    margin-bottom: 4px;
+  }
+  .breakdown-name { font-size: 8px; font-weight: 600; color: #1d1d1f; }
+  .breakdown-amount { font-size: 8px; color: #3B7BF6; font-weight: 700; }
+
+  /* FEATURES */
+  .features {
+    padding: 100px 40px;
+    background: #f5f5f7;
+  }
+  .features-inner {
+    max-width: 980px;
+    margin: 0 auto;
+    text-align: center;
+  }
+  .features-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+    margin-top: 60px;
+  }
+  .feature-card {
+    background: white;
+    border-radius: 20px;
+    padding: 36px 28px;
+    text-align: left;
+    transition: transform 0.2s;
+  }
+  .feature-card:hover { transform: translateY(-4px); }
+  .feature-emoji {
+    font-size: 36px;
+    margin-bottom: 16px;
+    display: block;
+  }
+  .feature-card h3 {
+    font-size: 19px;
+    font-weight: 700;
+    color: #1d1d1f;
+    margin-bottom: 8px;
+    letter-spacing: -0.3px;
+  }
+  .feature-card p {
+    font-size: 15px;
+    color: #6e6e73;
+    line-height: 1.6;
+  }
+
+  /* CTA */
+  .cta {
+    padding: 120px 40px;
+    text-align: center;
+    background: #1d1d1f;
+    color: white;
+  }
+  .cta h2 {
+    font-size: 56px;
+    font-weight: 700;
+    letter-spacing: -1.5px;
+    margin-bottom: 16px;
+    line-height: 1.1;
+  }
+  .cta h2 span { color: #3B7BF6; }
+  .cta p {
+    font-size: 19px;
+    color: rgba(255,255,255,0.6);
+    margin-bottom: 40px;
+  }
+  .btn-white {
+    background: white;
+    color: #1d1d1f;
+    padding: 10px 20px;
+    border-radius: 12px;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    transition: transform 0.2s, opacity 0.2s;
+    height: 56px;
+  }
+  .btn-white:hover { transform: scale(1.02); opacity: 0.9; }
+  .btn-white svg { width: 28px; height: 28px; fill: #1d1d1f; }
+  .btn-white .badge-text { display: flex; flex-direction: column; line-height: 1.05; }
+  .btn-white .badge-tagline { font-size: 11px; opacity: 0.7; letter-spacing: 0.02em; }
+  .btn-white .badge-name { font-size: 20px; font-weight: 500; letter-spacing: -0.01em; }
+
+  /* CONTACT */
+  .contact {
+    padding: 100px 40px;
+    background: #fff;
+    text-align: center;
+  }
+  .contact-form {
+    max-width: 480px;
+    margin: 48px auto 0;
+    text-align: left;
+  }
+  .contact-form input,
+  .contact-form textarea {
+    width: 100%;
+    background: #f5f5f7;
+    border: none;
+    border-radius: 12px;
+    padding: 14px 16px;
+    font-size: 15px;
+    font-family: inherit;
+    color: #1d1d1f;
+    margin-bottom: 12px;
+    outline: none;
+    transition: background 0.2s;
+  }
+  .contact-form input:focus,
+  .contact-form textarea:focus { background: #e8e8ed; }
+  .contact-form textarea { resize: vertical; min-height: 120px; }
+  .contact-form button {
+    width: 100%;
+    background: #3B7BF6;
+    color: white;
+    border: none;
+    border-radius: 980px;
+    padding: 15px;
+    font-size: 16px;
+    font-weight: 600;
+    font-family: inherit;
+    cursor: pointer;
+    transition: opacity 0.2s, transform 0.2s;
+  }
+  .contact-form button:hover { opacity: 0.85; transform: scale(1.01); }
+  .form-success {
+    display: none;
+    text-align: center;
+    color: #34c759;
+    font-size: 16px;
+    font-weight: 600;
+    margin-top: 16px;
+  }
+
+  /* FOOTER */
+  footer {
+    background: #f5f5f7;
+    padding: 40px;
+    text-align: center;
+    border-top: 1px solid #e5e5ea;
+  }
+  footer p {
+    font-size: 13px;
+    color: #6e6e73;
+    margin-bottom: 8px;
+  }
+  footer a {
+    color: #3B7BF6;
+    text-decoration: none;
+    font-size: 13px;
+    margin: 0 12px;
+  }
+  footer a:hover { text-decoration: underline; }
+
+  /* RESPONSIVE */
+  @media (max-width: 768px) {
+    .hero h1 { font-size: 44px; }
+    .hero p { font-size: 18px; }
+    .section-title { font-size: 34px; }
+    .features-grid { grid-template-columns: 1fr; }
+    .phones { gap: 12px; }
+    .phone { width: 160px; }
+    .phone.center { transform: scale(1.05); }
+    .cta h2 { font-size: 36px; }
+    nav { padding: 0 20px; }
+    .hero { padding: 120px 24px 80px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a class="nav-logo" href="#">
+    <div class="nav-icon">$</div>
+    SimpleTab
+  </a>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-icon">💰</div>
+  <h1>Log money.<br><span>Simply.</span></h1>
+  <p>Know where your money goes.</p>
+  <div class="hero-buttons">
+    <a class="btn-primary" href="https://apps.apple.com/app/id6768110168">
+      <svg viewBox="0 0 24 24" fill="white"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg>
+      <div class="badge-text">
+        <div class="badge-tagline">Download on the</div>
+        <div class="badge-name">App Store</div>
+      </div>
+    </a>
+    <a class="btn-secondary" href="#">Learn more ↓</a>
+  </div>
+</section>
+
+<!-- TAGLINE STRIP -->
+<div class="tagline-strip">
+  <strong>Free forever.</strong> No subscriptions. No ads. No nonsense.
+</div>
+
+<!-- SCREENSHOTS -->
+<section class="screenshots">
+  <p class="section-label">The App</p>
+  <h2 class="section-title">Made to be used.<br>Not figured out.</h2>
+  <p class="section-subtitle">Three taps to log an expense. A beautiful overview waiting when you need it.</p>
+
+  <div class="phones">
+    <!-- Phone 1: Home -->
+    <div class="phone">
+      <div class="phone-screen">
+        <div class="phone-header">
+          <div class="app-name">SimpleTab</div>
+          <div class="month">May 2026</div>
+          <div class="amount">$128.00</div>
+          <div class="sub">spent this month</div>
+        </div>
+        <div class="phone-body">
+          <div style="font-size:8px;color:#8e8e93;padding:6px 4px 4px;font-weight:600;">EXPENSES</div>
+          <div class="expense-row">
+            <div class="expense-icon">☕</div>
+            <div class="expense-info">
+              <div class="expense-name">Coffee</div>
+              <div class="expense-date">Peet's · May 10</div>
+            </div>
+            <div class="expense-amount">$15.00</div>
+          </div>
+          <div class="expense-row">
+            <div class="expense-icon">🛒</div>
+            <div class="expense-info">
+              <div class="expense-name">Groceries</div>
+              <div class="expense-date">Trader Joe's · May 9</div>
+            </div>
+            <div class="expense-amount">$63.00</div>
+          </div>
+          <div class="expense-row">
+            <div class="expense-icon">❤️</div>
+            <div class="expense-info">
+              <div class="expense-name">Health</div>
+              <div class="expense-date">CVS · May 4</div>
+            </div>
+            <div class="expense-amount">$30.00</div>
+          </div>
+          <div class="expense-row">
+            <div class="expense-icon">📺</div>
+            <div class="expense-info">
+              <div class="expense-name">Entertainment</div>
+              <div class="expense-date">Netflix · May 1</div>
+            </div>
+            <div class="expense-amount">$20.00</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Phone 2: Insights (center, larger) -->
+    <div class="phone center">
+      <div class="phone-screen">
+        <div class="phone-header">
+          <div class="month">May 2026</div>
+          <div class="sub">$128.00 total</div>
+        </div>
+        <div class="chart-area">
+          <div class="chart-label" style="font-size:10px;font-weight:700;color:#1d1d1f;margin-top:8px;">Spending by Category</div>
+          <svg class="donut" viewBox="0 0 100 100">
+            <circle cx="50" cy="50" r="35" fill="none" stroke="#e5e5ea" stroke-width="18"/>
+            <circle cx="50" cy="50" r="35" fill="none" stroke="#3B7BF6" stroke-width="18"
+              stroke-dasharray="107 113" stroke-dashoffset="0" transform="rotate(-90 50 50)"/>
+            <circle cx="50" cy="50" r="35" fill="none" stroke="#34c759" stroke-width="18"
+              stroke-dasharray="50 170" stroke-dashoffset="-107" transform="rotate(-90 50 50)"/>
+            <circle cx="50" cy="50" r="35" fill="none" stroke="#ff9500" stroke-width="18"
+              stroke-dasharray="35 185" stroke-dashoffset="-157" transform="rotate(-90 50 50)"/>
+            <circle cx="50" cy="50" r="35" fill="none" stroke="#af52de" stroke-width="18"
+              stroke-dasharray="28 192" stroke-dashoffset="-192" transform="rotate(-90 50 50)"/>
+          </svg>
+          <div style="display:flex;gap:8px;justify-content:center;margin-bottom:10px;flex-wrap:wrap;">
+            <span style="font-size:7px;color:#3B7BF6;">● Groceries</span>
+            <span style="font-size:7px;color:#34c759;">● Health</span>
+            <span style="font-size:7px;color:#ff9500;">● Coffee</span>
+            <span style="font-size:7px;color:#af52de;">● Other</span>
+          </div>
+          <div class="chart-label" style="align-self:flex-start;font-weight:700;color:#1d1d1f;">Breakdown</div>
+          <div class="breakdown-row">
+            <span class="breakdown-name">🛒 Groceries</span>
+            <span class="breakdown-amount">$63.00</span>
+          </div>
+          <div class="breakdown-row">
+            <span class="breakdown-name">❤️ Health</span>
+            <span class="breakdown-amount">$30.00</span>
+          </div>
+          <div class="breakdown-row">
+            <span class="breakdown-name">☕ Coffee</span>
+            <span class="breakdown-amount">$15.00</span>
+          </div>
+          <div class="breakdown-row">
+            <span class="breakdown-name">📺 Entertainment</span>
+            <span class="breakdown-amount">$20.00</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Phone 3: Add Expense -->
+    <div class="phone">
+      <div class="phone-screen">
+        <div style="background:white;padding:14px 12px;border-bottom:1px solid #f2f2f7;">
+          <div style="font-size:11px;font-weight:700;color:#1d1d1f;text-align:center;">Add Expense</div>
+        </div>
+        <div style="padding:12px;flex:1;background:#f2f2f7;">
+          <div style="font-size:8px;color:#8e8e93;margin-bottom:4px;padding-left:4px;">AMOUNT</div>
+          <div style="background:white;border-radius:10px;padding:10px 12px;margin-bottom:12px;">
+            <span style="font-size:20px;font-weight:700;color:#1d1d1f;">$ 30</span>
+          </div>
+          <div style="font-size:8px;color:#8e8e93;margin-bottom:4px;padding-left:4px;">CATEGORY</div>
+          <div style="background:white;border-radius:10px;padding:8px;margin-bottom:12px;text-align:center;">
+            <div style="font-size:9px;color:#8e8e93;margin-bottom:4px;">Travel</div>
+            <div style="font-size:10px;font-weight:700;color:#1d1d1f;background:#f2f2f7;padding:4px 8px;border-radius:6px;">⚡ Utilities</div>
+            <div style="font-size:9px;color:#8e8e93;margin-top:4px;">Other</div>
+          </div>
+          <div style="font-size:8px;color:#8e8e93;margin-bottom:4px;padding-left:4px;">NOTE</div>
+          <div style="background:white;border-radius:10px;padding:10px 12px;margin-bottom:12px;">
+            <span style="font-size:10px;color:#1d1d1f;">Electricity</span>
+          </div>
+          <div style="background:white;border-radius:10px;padding:10px 12px;display:flex;justify-content:space-between;align-items:center;">
+            <span style="font-size:9px;color:#1d1d1f;font-weight:500;">Repeat monthly</span>
+            <div style="width:28px;height:16px;background:#e5e5ea;border-radius:8px;"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section class="features">
+  <div class="features-inner">
+    <p class="section-label">Features</p>
+    <h2 class="section-title">Built to get out<br>of your way.</h2>
+    <p class="section-subtitle">Every feature serves one purpose — helping you stay on top of your money with zero friction.</p>
+
+    <div class="features-grid">
+      <div class="feature-card">
+        <span class="feature-emoji">⚡</span>
+        <h3>Log in seconds</h3>
+        <p>Tap +, enter amount, pick category. Done. The fastest way to track a coffee or a grocery run.</p>
+      </div>
+      <div class="feature-card">
+        <span class="feature-emoji">📊</span>
+        <h3>See the big picture</h3>
+        <p>Beautiful charts show exactly where your money goes each month. Donut or bar — your choice.</p>
+      </div>
+      <div class="feature-card">
+        <span class="feature-emoji">🎯</span>
+        <h3>Budget that works</h3>
+        <p>Set a monthly budget and watch a live progress bar keep you honest. Know before you overspend.</p>
+      </div>
+      <div class="feature-card">
+        <span class="feature-emoji">🔁</span>
+        <h3>Recurring expenses</h3>
+        <p>Netflix, rent, subscriptions — mark them as recurring and they auto-log every month.</p>
+      </div>
+      <div class="feature-card">
+        <span class="feature-emoji">🌍</span>
+        <h3>Multi-currency</h3>
+        <p>Traveling? Switch between 12 currencies including USD, EUR, GBP, JPY, INR and more.</p>
+      </div>
+      <div class="feature-card">
+        <span class="feature-emoji">☁️</span>
+        <h3>Syncs everywhere</h3>
+        <p>Your data lives in the cloud. Switch phones, reinstall the app — everything is right where you left it.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta">
+  <h2>Start tracking.<br><span>It's free.</span></h2>
+  <p>No credit card. No subscription. Download and go.</p>
+  <a class="btn-white" href="https://apps.apple.com/app/id6768110168">
+    <svg viewBox="0 0 24 24"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg>
+    <div class="badge-text">
+      <div class="badge-tagline">Download on the</div>
+      <div class="badge-name">App Store</div>
+    </div>
+  </a>
+</section>
+
+<!-- CONTACT -->
+<section class="contact">
+  <p class="section-label">Get in Touch</p>
+  <h2 class="section-title">Have a question?<br>We'd love to hear from you.</h2>
+  <p class="section-subtitle">Send us a message and we'll get back to you.</p>
+
+  <form class="contact-form" id="contact-form" action="https://formspree.io/f/xykolgrj" method="POST">
+    <input type="text" name="name" placeholder="Your name" required>
+    <input type="email" name="email" placeholder="Your email" required>
+    <textarea name="message" placeholder="Your message" required></textarea>
+    <button type="submit">Send Message</button>
+  </form>
+  <p class="form-success" id="form-success">Message sent! We'll be in touch soon. ✓</p>
+</section>
+
+<script>
+  const form = document.getElementById('contact-form');
+  form.addEventListener('submit', async function(e) {
+    e.preventDefault();
+    const data = new FormData(form);
+    const res = await fetch(form.action, { method: 'POST', body: data, headers: { 'Accept': 'application/json' } });
+    if (res.ok) {
+      form.style.display = 'none';
+      document.getElementById('form-success').style.display = 'block';
+    }
+  });
+</script>
+
+<!-- FOOTER -->
+<footer>
+  <p>© 2026 SimpleTab - Money Log. Made with ❤️.</p>
+  <div style="margin-top:8px;">
+    <a href="privacy.html">Privacy Policy</a>
+  </div>
+</footer>
+
+</body>
+</html>
